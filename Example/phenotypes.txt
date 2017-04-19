@@ -1,0 +1,3 @@
+t1	trait1
+t2	trait2
+t3	trait3

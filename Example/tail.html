@@ -1,0 +1,9 @@
+    top_hits.forEach(function(hit){
+      d3.select("ul.top_hits").append("li")
+        .html("<a href=\"javascript:void(0);\" onclick=\"javascript:jumpTo('" + hit[0] + "');\">" + hit[1] + "</a>");
+    });
+
+  </script>
+
+  </body>
+</html>

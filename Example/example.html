@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"/>
+
+    <!-- Necessary includes for LocusZoom.js -->
+    <script src="http://statgen.github.io/locuszoom/locuszoom.vendor.min.js" type="text/javascript"></script>
+    <script src="http://statgen.github.io/locuszoom/locuszoom.app.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="http://statgen.github.io/locuszoom/locuszoom.css" type="text/css"/>
+
+    <title>LocusZoom.js ~ TopMed</title>
+
+    <style>
+      body {
+        background-color: #FAFAFA;
+        margin: 0px 20px;
+      }
+      img {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+    </style>
+
+  </head>
+
+  <body style="background-color: #FAFAFA; margin-left: 20px; margin-right: 20px;">
+    <div class="container">
+
+      <h1 style="margin-top: 1em;"><strong>LocusZoom.js</strong></h1>
+
+      <h3 style="float: left; color: #777">TOPmed</h3>
+      <h6 style="float: right;"><a href="index.html">&lt; return home</a></h6>
+
+      <hr style="clear: both;">
+
+      <p>This set of plots shows significant loci for cigarettes per day, age of initiation, smoking initiation and smoking cessation for the TOPmed analysis.</p>
+      <p>The top panel shows results in the region for three traits. LD information is not shown. Being a region view interactivity is enabled, so panning and zooming is possible. As the plot is navigated around the genome all layers will stay aligned and move in unison.</p>
+
+      <div class="row">
+        <div class="two columns">
+          <h4>Top Hits</h4>
+          <style>ul.top_hits li { margin-bottom: 0rem; }</style>
+          <ul class="top_hits" style="padding-left: 0.2rem; min-width: 110px;"></ul>
+        </div>
+        <div class="ten columns">
+          <div id="plot" data-region="15:78800000-78820000"></div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <footer style="text-align: center;">
+          &copy; Copyright 2016 <a href="https://github.com/statgen">The University of Michigan Center for Statistical Genetics</a><br>
+        </footer>
+      </div>
+
+    </div>
+
+    <script type="text/javascript">
+
+    // Define base data sources
+    var apiBase = "https://portaldev.sph.umich.edu/api/v1/";
+    var data_sources = new LocusZoom.DataSources()
+      .add("recomb", ["RecombLZ", { url: apiBase + "annotation/recomb/results/", params: {source: 15} }])
+      .add("ld", ["LDLZ" ,apiBase + "pair/LD/"])
+      .add("gene", ["GeneLZ", { url: apiBase + "annotation/genes/", params: {source: 2} }])
+      .add("constraint", ["GeneConstraintLZ", { url: "http://exac.broadinstitute.org/api/constraint" }]);
+
+    // Build the base layout
+    var association_panel_mods = {
+        data_layers: [
+            LocusZoom.Layouts.get("data_layer", "significance", { name: "Line of GWAS Significance" }),
+            LocusZoom.Layouts.get("data_layer", "recomb_rate", { namespace: { "recomb": "recomb" }, name: "Recombination Rate" })
+        ],
+        dashboard: LocusZoom.Layouts.get("panel", "association")["dashboard"]
+    };
+    association_panel_mods.dashboard.components.push({
+        type: "data_layers",
+        position: "right",
+        statuses: ["faded", "hidden"]
+    });
+    layout = {
+        width: 800,
+        height: 500,
+        responsive_resize: true,
+        panels: [
+            LocusZoom.Layouts.get("panel", "association", association_panel_mods),
+            LocusZoom.Layouts.get("panel", "genes", { namespace: { "gene": "gene" } })
+        ],
+        dashboard: LocusZoom.Layouts.get("dashboard","region_nav_plot")
+    };
+
+    // Define a set of studies/phenotypes and loop through them to add a data source and data layer for each one
+    var phenos = [
+	{ namespace: "t1", title: "trait1" , color: "rgb(212, 63, 58)", study_id: "t1" },
+	{ namespace: "t2", title: "trait2" , color: "rgb(238, 162, 54)", study_id: "t2" },
+	{ namespace: "t3", title: "trait3" , color: "rgb(92, 184, 92)", study_id: "t3" },
+     ];
+    var dataBase = 'http://127.0.0.1:8000/single/'
+    //dataBase = window.location.origin + window.location.pathname.substr(0, window.location.pathname.length - "exome.html".length)
+    phenos.forEach(function(pheno){
+        data_sources.add(pheno.namespace, ["AssociationLZ", {url: dataBase, params: {analysis: pheno.study_id, id_field: "variant"}}]);
+        var association_data_layer_mods = {
+            namespace: { "assoc": pheno.namespace },
+            id: "associationpvalues_" + pheno.namespace,
+            name: pheno.title,
+            point_shape: "circle",
+            point_size: 40,
+            color: pheno.color,
+            legend: [
+                { shape: "circle", color: pheno.color, size: 40, label: pheno.title, class: "lz-data_layer-scatter" },
+            ],
+            fields: [pheno.namespace+":variant", pheno.namespace+":position", pheno.namespace+":log_pvalue", pheno.namespace+":log_pvalue|logtoscinotation", pheno.namespace+":ref_allele"],
+            tooltip: {
+                closable: true,
+                show: { or: ["highlighted", "selected"] },
+                hide: { and: ["unhighlighted", "unselected"] },
+                html: "<strong>" + pheno.title + "</strong><br>"
+                    + "<strong>{{" + pheno.namespace + ":variant}}</strong><br>"
+                    + "P Value: <strong>{{" + pheno.namespace + ":log_pvalue|logtoscinotation}}</strong><br>"
+                    + "Ref. Allele: <strong>{{" + pheno.namespace + ":ref_allele}}</strong><br>"
+            }
+        };
+        layout.panels[0].data_layers.push(LocusZoom.Layouts.get("data_layer", "association_pvalues", association_data_layer_mods));
+    });
+
+    // Generate the LocusZoom plot
+    var plot = LocusZoom.populate("#plot", data_sources, layout);
+
+    // Add a basic loader to each panel (one that shows when data is requested and hides when one rendering)
+    plot.layout.panels.forEach(function(panel){
+      plot.panels[panel.id].addBasicLoader();
+    });
+
+    // Create a method to parse a region string into a 600Kb genome range and load it
+    function jumpTo(region) {
+      var target = region.split(":");
+      var chr = target[0];
+      var pos = target[1];
+      var start = 0;
+      var end = 0;
+      if (!pos.match(/[-+]/)) {
+        start = +pos - 300000
+        end = +pos + 300000
+      }
+      plot.applyState({ chr: chr, start: start, end: end, ldrefvar: "" });
+      return false;
+    }
+
+    // Populate a list of top hits links for the plot
+    var top_hits = [
+	["6:138168346","6:138168346"],
+	["6:138169213","6:138169213"],
+	["12:47620557","12:47620557"],
+    ];
+    top_hits.forEach(function(hit){
+      d3.select("ul.top_hits").append("li")
+        .html("<a href=\"javascript:void(0);\" onclick=\"javascript:jumpTo('" + hit[0] + "');\">" + hit[1] + "</a>");
+    });
+
+  </script>
+
+  </body>
+</html>
