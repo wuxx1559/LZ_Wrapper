@@ -11,7 +11,7 @@
 
 Three types of input files are needed for this utility to work:
  
-#### 1. For each trait/phenotype of interest, a \<trait\>.txt file with all the loci of interest in it. 
+### 1. For each trait/phenotype of interest, a \<trait\>.txt file with all the loci of interest in it. 
 
 For example, one would have a si.txt for smoking initiation, sc.txt for smoking cessation, and so on. These files **should have a header line**.
 
@@ -23,7 +23,7 @@ For example, one would have a si.txt for smoking initiation, sc.txt for smoking 
   The trait file can have other columns after column 4 - those will be ignored.
   See Examples for trait file examples (t1.txt, t2.txt, t3.txt).
   
-#### 2. A sig_variant.txt file with all the significant variants a user may want to explore (the TOP hits in the app). 
+### 2. A sig_variant.txt file with all the significant variants a user may want to explore (the TOP hits in the app). 
 
 For the example, this file contains the positions in TOP Hits in the following image:
  ![Alt text](/Example/TopHits.png?raw=true "Top Hits")
@@ -32,7 +32,7 @@ For the example, this file contains the positions in TOP Hits in the following i
   - Column 1 : **Chromosome**
   - Column 2 : **Position**
   
-#### 3. A phenotypes file. 
+### 3. A phenotypes file. 
 
 This file specifies the different phenotypes/traits of interest and their ids.
 
