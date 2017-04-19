@@ -1,4 +1,4 @@
-**LZ_Wrapper: A wrapper utility to create data, a local web server and html files for LocusZoom js to work.**
+# **LZ_Wrapper: A wrapper utility to create data, a local web server and html files for LocusZoom js to work.**
 
 ## **Requirements**
 
@@ -37,19 +37,38 @@ Three types of input files are needed for this utility to work:
 
 ## **Step 1**
 
-The first step is to create a csv file with the input data. Here we use the \<trait\>.txt files as input to the createCSV.py script. The script outputs a file named **assoc.csv**.
+The first step is to create a csv file with the input data. Here we use the \<trait\>.txt files as input to the **createCSV.py** script. The script outputs a file named **assoc.csv**.
 `python createCSV.py -h` to look at the inputs needed. 
 `python createCSV.py t1.txt t2.txt ...` 
 For example: `python createCSV.py ai.txt cpd.txt si.txt sc.txt`
 
 ## **Step2**
 
-The second step is to create the html file needed to run LocusZoom js. The script createCode.py creates this html file. Inputs to the script are the sig_variant.txt and phenotypes.txt files. The script outputs text in html format which can be redirected to a html file of user's choice.
+The second step is to create the html file needed to run LocusZoom js. The script **createCode.py** creates this html file. Inputs to the script are the sig_variant.txt and phenotypes.txt files. The script outputs text in html format which can be redirected to a html file of user's choice.
 `python createCode.py -h` to look at the inputs needed. 
 `python createCode.py sig_variant.txt phenotypes.txt > Example.html`
 
  As a reminder, the phenotype ids (column 1) of the phenotypes file should exactly match the input file names for each trait in step 1.
 
+## **Step3**
 
+The third and the final step is to run the **app.py** script.
+`python app.py`
+This starts a localhost server at port 8000. 
+
+If your local port 8000 is already taken, specify another part by changing the following line in app.py before running it:
+`app.run(port=8000)`
+You can specify any port number there.
+Be sure to also modify the html file generated in step 2 by changing the port number in the following line:
+`var dataBase = 'http://127.0.0.1:8000/single/'`
+by replacing the 8000 with the actual port number. Alternatively, you can modify that line in mid.html and then run createCode.py again.
+
+## **Step 4**
+
+Now that the app is running, open the html file generated in **step 2** in a browser of your choice, and explore!
+
+**NOTE:** The initial panel for LocusZoom is around the `15:78800000-78820000` region of chromosome 15. If you wish to modify that, go into your html file, and modify the following line:
+`<div id="plot" data-region="15:78800000-78820000"></div>`
+to your region of interest. For example, if a user wants the initial view to have the range 1011001-1020000 of Chromosome 1, they will replace the `15:78800000-78820000` with `1:1011001-1020000`.
 
 
