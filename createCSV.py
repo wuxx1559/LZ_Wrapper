@@ -25,10 +25,10 @@ def main():
           data_dict["analysis"].append(analysis)
           data_dict["chromosome"].append(fields[0].strip())
           data_dict["position"].append(int(fields[1].strip()))
-          data_dict["variant"].append(fields[3].strip())
-          ref_allele = fields[3].strip().split('_')[1].split('/')[0]
+          data_dict["variant"].append(fields[2].strip())
+          ref_allele = fields[2].strip().split('_')[1].split('/')[0]
           data_dict["ref_allele"].append(ref_allele)
-          pvalue = float(fields[10].strip())
+          pvalue = float(fields[3].strip())
           logp = -math.log(pvalue, 10)
           data_dict["pvalue"].append(pvalue)
           data_dict["log_pvalue"].append(logp)
