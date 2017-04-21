@@ -12,7 +12,8 @@
             legend: [
                 { shape: "circle", color: pheno.color, size: 40, label: pheno.title, class: "lz-data_layer-scatter" },
             ],
-            fields: [pheno.namespace+":variant", pheno.namespace+":position", pheno.namespace+":log_pvalue", pheno.namespace+":log_pvalue|logtoscinotation", pheno.namespace+":ref_allele"],
+	    fields: [pheno.namespace+":variant", pheno.namespace+":position", pheno.namespace+":log_pvalue", pheno.namespace+":log_pvalue|logtoscinotation", pheno.namespace+":ref_allele",
+                     pheno.namespace+":ref_allele_freq"],
             tooltip: {
                 closable: true,
                 show: { or: ["highlighted", "selected"] },
@@ -21,6 +22,7 @@
                     + "<strong>{{" + pheno.namespace + ":variant}}</strong><br>"
                     + "P Value: <strong>{{" + pheno.namespace + ":log_pvalue|logtoscinotation}}</strong><br>"
                     + "Ref. Allele: <strong>{{" + pheno.namespace + ":ref_allele}}</strong><br>"
+                    + "MAF: <strong>{{" + pheno.namespace + ":ref_allele_freq}}</strong><br>"
             }
         };
         layout.panels[0].data_layers.push(LocusZoom.Layouts.get("data_layer", "association_pvalues", association_data_layer_mods));

@@ -6,7 +6,6 @@ create and send a response.
 
 
 from flask import Flask, request, jsonify
-from flask_restful import Resource, Api
 import json
 from flask_cors import CORS
 import pandas
@@ -34,7 +33,6 @@ def results():
 
 def parseAssoc(analysis, chrom, low_pos, high_pos):
   sub = df[(df.analysis==analysis) & (df.chromosome==chrom) & (df.position >= low_pos) & (df.position <= high_pos)]
-  sub["ref_allele_freq"] = None
   sub["score_test_stat"] = None
   data_dict = sub.to_dict(orient='list')
   result = {'data': data_dict, 'last_page':None}

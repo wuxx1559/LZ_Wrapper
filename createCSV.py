@@ -14,7 +14,7 @@ def main():
   parser.add_argument('txtFiles', metavar='files', nargs='+', help = 'The path to the text file')
   args = parser.parse_args()
   
-  data_dict = {"analysis":[], "chromosome":[], "log_pvalue":[], "position":[], "pvalue":[], "ref_allele":[], "variant":[]}
+  data_dict = {"analysis":[], "chromosome":[], "log_pvalue":[], "position":[], "pvalue":[], "ref_allele":[], "variant":[], "ref_allele_freq":[]}
   for txtf in args.txtFiles:
     analysis = os.path.basename(txtf).split('.')[0].strip()
     print analysis
@@ -27,6 +27,7 @@ def main():
           data_dict["position"].append(int(fields[1].strip()))
           data_dict["variant"].append(fields[2].strip())
           ref_allele = fields[2].strip().split('_')[1].split('/')[0]
+          data_dict["ref_allele_freq"].append(round(float(fields[4].strip()), 4))
           data_dict["ref_allele"].append(ref_allele)
           pvalue = float(fields[3].strip())
           logp = -math.log(pvalue, 10)
