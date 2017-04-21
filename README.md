@@ -20,7 +20,8 @@ For example, one would have a si.txt for smoking initiation, sc.txt for smoking 
   - Column 2 : **Position**
   - Column 3 : **Marker/Variant ID**. The variant ID should be of the format chr:position_REF/ALT. The ref allele is inferred from this variant id.
   - Column 4 : **p value**
-  The trait file can have other columns after column 4 - those will be ignored.
+  - Column 5 : **Minor allele frequency (MAF)**
+  The trait file can have other columns after column 5 - those will be ignored.
   See Examples for trait file examples (t1.txt, t2.txt, t3.txt).
   
 ### 2. A sig_variant.txt file with all the significant variants a user may want to explore (the TOP hits in the app). 
