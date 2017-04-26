@@ -24,7 +24,7 @@ For example, one would have a si.txt for smoking initiation, sc.txt for smoking 
   The trait file can have other columns after column 5 - those will be ignored.
   See Examples for trait file examples (t1.txt, t2.txt, t3.txt).
   
-### 2. A sig_variant.txt file with all the significant variants a user may want to explore (the TOP hits in the app). 
+### 2. For each phenotype, a sig_variant.txt file with all the significant variants a user may want to explore (the TOP hits in the app for a phenotype). 
 
 For the example, this file contains the positions in TOP Hits in the following image:
  ![Alt text](/Example/TopHits.png?raw=true "Top Hits")
@@ -35,11 +35,12 @@ For the example, this file contains the positions in TOP Hits in the following i
   
 ### 3. A phenotypes file. 
 
-This file specifies the different phenotypes/traits of interest and their ids.
+This file specifies the different phenotypes/traits of interest and their ids, and the specific significant_variant file.
 
-  There are two columns in the phenotypes file:
+  There are three columns in the phenotypes file:
   - Column 1 : **Phenotype id**
   - Column 2 : **Phenotype name**
+  - Column 3 : **Significant_variant file name**
   
   **NOTE:** Be very careful to have the phenotype id exactly the same as the filenames for each trait (trait.txt) file.
 
@@ -59,9 +60,9 @@ The second step is to create the html file needed to run LocusZoom js. The scrip
 
 `python createCode.py -h` to look at the inputs needed. 
 
-`python createCode.py sig_variant.txt phenotypes.txt > Example.html`
+`python createCode.py sig_variant.txt phenotypes.txt`
 
- As a reminder, the phenotype ids (column 1) of the phenotypes file should exactly match the input file names for each trait in step 1.
+As a reminder, the phenotype ids (column 1) of the phenotypes file should exactly match the input file names for each trait in step 1. This step creates a html file for LocusZoom with LD for each trait/phenotype (trait.html), a multiple phenotpye LocusZoom plot for all traits together (index.html) and a **wrapper.html** which lets a user traverse between the different plots generated. 
 
 ## **Step3**
 
@@ -85,12 +86,10 @@ by replacing the 8000 with the actual port number. Alternatively, you can modify
 
 ## **Step 4**
 
-Now that the app is running, open the html file generated in **step 2** in a browser of your choice, and explore!
+Now that the app is running, open the **wrapper.html** file generated in **step 2** in a browser of your choice, and explore!
 
-**NOTE:** The initial panel for LocusZoom is around the `15:78800000-78820000` region of chromosome 15. If you wish to modify that, go into your html file, and modify the following line:
+**NOTE:** The initial panel for LocusZoom for all phenotypes combined is around the `15:78800000-78820000` region of chromosome 15. If you wish to modify that, go into **index.html** file, and modify the following line:
 
 `<div id="plot" data-region="15:78800000-78820000"></div>`
 
 to your region of interest. For example, if a user wants the initial view to have the range 1011001-1020000 of Chromosome 1, they will replace the `15:78800000-78820000` with `1:1011001-1020000`.
-
-
