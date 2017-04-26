@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Copyright (c) 2016 University of Michigan Center for Statistical Genetics -->
 <html>
   <head>
     <meta charset="utf-8">
@@ -32,14 +31,11 @@
 
       <h1 style="margin-top: 1em;"><strong>LocusZoom.js</strong></h1>
 
-      <h3 style="float: left; color: #777">LocusZoom</h3>
+      <h3 style="float: left; color: #777">TOPmed</h3>
       <h6 style="float: right;"><a href="index.html">&lt; return home</a></h6>
 
       <hr style="clear: both;">
-
-      <p>This set of plots shows significant loci for different traits.</p>
-      <p>The top panel shows results in the region for all traits. LD information is not shown. Being a region view interactivity is enabled, so panning and zooming is possible. As the plot is navigated around the genome all layers will stay aligned and move in unison.</p>
-
+	<p>This set of plots shows significant loci for trait2.</p>
       <div class="row">
         <div class="two columns">
           <h4>Top Hits</h4>
@@ -47,7 +43,7 @@
           <ul class="top_hits" style="padding-left: 0.2rem; min-width: 110px;"></ul>
         </div>
         <div class="ten columns">
-          <div id="plot" data-region="15:78800000-78820000"></div>
+		<div id="plot" data-region="6:137869213-138469213"></div>
         </div>
       </div>
 
@@ -97,9 +93,7 @@
 
     // Define a set of studies/phenotypes and loop through them to add a data source and data layer for each one
     var phenos = [
-	{ namespace: "t1", title: "trait1" , color: "rgb(212, 63, 58)", study_id: "t1" },
 	{ namespace: "t2", title: "trait2" , color: "rgb(238, 162, 54)", study_id: "t2" },
-	{ namespace: "t3", title: "trait3" , color: "rgb(92, 184, 92)", study_id: "t3" },
      ];
     var dataBase = 'http://127.0.0.1:8000/single/'
     //dataBase = window.location.origin + window.location.pathname.substr(0, window.location.pathname.length - "exome.html".length)
@@ -109,24 +103,64 @@
             namespace: { "assoc": pheno.namespace },
             id: "associationpvalues_" + pheno.namespace,
             name: pheno.title,
-            point_shape: "circle",
-            point_size: 40,
-            color: pheno.color,
-            legend: [
-                { shape: "circle", color: pheno.color, size: 40, label: pheno.title, class: "lz-data_layer-scatter" },
-            ],
-	    fields: [pheno.namespace+":variant", pheno.namespace+":position", pheno.namespace+":log_pvalue", pheno.namespace+":log_pvalue|logtoscinotation", pheno.namespace+":ref_allele",
-                     pheno.namespace+":ref_allele_freq"],
-            tooltip: {
-                closable: true,
-                show: { or: ["highlighted", "selected"] },
-                hide: { and: ["unhighlighted", "unselected"] },
-                html: "<strong>" + pheno.title + "</strong><br>"
-                    + "<strong>{{" + pheno.namespace + ":variant}}</strong><br>"
-                    + "P Value: <strong>{{" + pheno.namespace + ":log_pvalue|logtoscinotation}}</strong><br>"
-                    + "Ref. Allele: <strong>{{" + pheno.namespace + ":ref_allele}}</strong><br>"
-                    + "MAF: <strong>{{" + pheno.namespace + ":ref_allele_freq}}</strong><br>"
+          point_shape: {
+            scale_function: "if",
+            field: "{{namespace[ld]}}isrefvar",
+            parameters: {
+              field_value: 1,
+              then: "diamond",
+              else: "circle"
             }
+          },
+          point_size: {
+            scale_function: "if",
+            field: "{{namespace[ld]}}isrefvar",
+            parameters: {
+              field_value: 1,
+              then: 80,
+              else: 40
+            }
+          },
+          color: [
+          {
+            scale_function: "if",
+            field: "{{namespace[ld]}}isrefvar",
+            parameters: {
+                field_value: 1,
+                then: "#9632b8"
+            }
+          },
+          {
+            scale_function: "numerical_bin",
+            field: "{{namespace[ld]}}state",
+            parameters: {
+                breaks: [0, 0.2, 0.4, 0.6, 0.8],
+                values: ["#357ebd","#46b8da","#5cb85c","#eea236","#d43f3a"]
+            }
+          },
+            "#B8B8B8"
+          ],
+          legend: [
+            { shape: "diamond", color: "#9632b8", size: 40, label: "LD Ref Var", class: "lz-data_layer-scatter" },
+            { shape: "circle", color: "#d43f3a", size: 40, label: "1.0 > r² ≥ 0.8", class: "lz-data_layer-scatter" },
+            { shape: "circle", color: "#eea236", size: 40, label: "0.8 > r² ≥ 0.6", class: "lz-data_layer-scatter" },
+            { shape: "circle", color: "#5cb85c", size: 40, label: "0.6 > r² ≥ 0.4", class: "lz-data_layer-scatter" },
+            { shape: "circle", color: "#46b8da", size: 40, label: "0.4 > r² ≥ 0.2", class: "lz-data_layer-scatter" },
+            { shape: "circle", color: "#357ebd", size: 40, label: "0.2 > r² ≥ 0.0", class: "lz-data_layer-scatter" },
+            { shape: "circle", color: "#B8B8B8", size: 40, label: "no r² data", class: "lz-data_layer-scatter" }
+          ],
+          fields: [pheno.namespace+":variant", pheno.namespace+":position", pheno.namespace+":log_pvalue", pheno.namespace+":log_pvalue|logtoscinotation", pheno.namespace+":ref_allele",
+                     pheno.namespace+":ref_allele_freq", "{{namespace[ld]}}state", "{{namespace[ld]}}isrefvar"],
+          tooltip: {
+              closable: true,
+              show: { or: ["highlighted", "selected"] },
+              hide: { and: ["unhighlighted", "unselected"] },
+              html: "<strong>" + pheno.title + "</strong><br>"
+                  + "<strong>{{" + pheno.namespace + ":variant}}</strong><br>"
+                  + "P Value: <strong>{{" + pheno.namespace + ":log_pvalue|logtoscinotation}}</strong><br>"
+                  + "Ref. Allele: <strong>{{" + pheno.namespace + ":ref_allele}}</strong><br>"
+                  + "MAF: <strong>{{" + pheno.namespace + ":ref_allele_freq}}</strong><br>"
+          }
         };
         layout.panels[0].data_layers.push(LocusZoom.Layouts.get("data_layer", "association_pvalues", association_data_layer_mods));
     });
@@ -156,9 +190,7 @@
 
     // Populate a list of top hits links for the plot
     var top_hits = [
-	["6:138168346","6:138168346"],
 	["6:138169213","6:138169213"],
-	["12:47620557","12:47620557"],
     ];
     top_hits.forEach(function(hit){
       d3.select("ul.top_hits").append("li")

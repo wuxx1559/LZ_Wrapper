@@ -1,10 +1,3 @@
-'''
-This script creates a csv file from significant loci for each trait/phenotype.
-It takes as input a list of significant loci files (1 for each phenotype). Each file has a list of variants.
-It outputs a comma separated file (.csv) that contains pertinent information for LocusZoom and the
-local server api.
-'''
-
 import math, argparse, re, os, datetime, sys
 from subprocess import Popen, PIPE
 import pandas
@@ -27,8 +20,8 @@ def main():
           data_dict["position"].append(int(fields[1].strip()))
           data_dict["variant"].append(fields[2].strip())
           ref_allele = fields[2].strip().split('_')[1].split('/')[0]
-          data_dict["ref_allele_freq"].append(round(float(fields[4].strip()), 4))
           data_dict["ref_allele"].append(ref_allele)
+          data_dict["ref_allele_freq"].append(round(float(fields[4].strip()), 4))
           pvalue = float(fields[3].strip())
           logp = -math.log(pvalue, 10)
           data_dict["pvalue"].append(pvalue)

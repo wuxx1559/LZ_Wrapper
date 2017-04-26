@@ -1,0 +1,48 @@
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <footer style="text-align: center;">
+          &copy; Copyright 2016 <a href="https://github.com/statgen">The University of Michigan Center for Statistical Genetics</a><br>
+        </footer>
+      </div>
+
+    </div>
+
+    <script type="text/javascript">
+
+    // Define base data sources
+    var apiBase = "https://portaldev.sph.umich.edu/api/v1/";
+    var data_sources = new LocusZoom.DataSources()
+      .add("recomb", ["RecombLZ", { url: apiBase + "annotation/recomb/results/", params: {source: 15} }])
+      .add("ld", ["LDLZ" ,apiBase + "pair/LD/"])
+      .add("gene", ["GeneLZ", { url: apiBase + "annotation/genes/", params: {source: 2} }])
+      .add("constraint", ["GeneConstraintLZ", { url: "http://exac.broadinstitute.org/api/constraint" }]);
+
+    // Build the base layout
+    var association_panel_mods = {
+        data_layers: [
+            LocusZoom.Layouts.get("data_layer", "significance", { name: "Line of GWAS Significance" }),
+            LocusZoom.Layouts.get("data_layer", "recomb_rate", { namespace: { "recomb": "recomb" }, name: "Recombination Rate" })
+        ],
+        dashboard: LocusZoom.Layouts.get("panel", "association")["dashboard"]
+    };
+    association_panel_mods.dashboard.components.push({
+        type: "data_layers",
+        position: "right",
+        statuses: ["faded", "hidden"]
+    });
+    layout = {
+        width: 800,
+        height: 500,
+        responsive_resize: true,
+        panels: [
+            LocusZoom.Layouts.get("panel", "association", association_panel_mods),
+            LocusZoom.Layouts.get("panel", "genes", { namespace: { "gene": "gene" } })
+        ],
+        dashboard: LocusZoom.Layouts.get("dashboard","region_nav_plot")
+    };
+
+    // Define a set of studies/phenotypes and loop through them to add a data source and data layer for each one
