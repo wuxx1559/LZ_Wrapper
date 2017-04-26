@@ -90,11 +90,14 @@ def write_sigs(outfile, sigfile, s_name, s_id, color, all_sig_loci):
       pos = fields[1].strip()
       if chrom not in p_loci:
         p_loci[chrom] = []
-      p_loci[chrom].append(pos)
+      if pos not in p_loci[chrom]:
+        p_loci[chrom].append(pos)
 
       if chrom not in all_sig_loci:
         all_sig_loci[chrom] = []
-      all_sig_loci[chrom].append(pos)
+      if pos not in all_sig_loci[chrom]:
+        all_sig_loci[chrom].append(pos)
+
   some_chr = p_loci.keys()[0]
   h_locus = str(some_chr) + ':' + str(int(p_loci[some_chr][0]) - 300000) + '-' + str(int(p_loci[some_chr][0]) + 300000)
   write_head(outfile, s_name, h_locus)
