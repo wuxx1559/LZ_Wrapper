@@ -121,18 +121,18 @@ def sort_write(outfile, loci):
   else:
     raise ValueError('Significant loci chromosomes have an invalid value: ' + str(sorted_keys) + '\n')
 
-  for key in sorted_keys:
-    poss = loci[key]
+  for key1 in sorted_keys:
+    poss = loci[key1]
     poss.sort(key=int)
     for pos in poss:
-      var = str(key) + ':' + str(pos)
+      var = str(key1) + ':' + str(pos)
       outfile.write('\t["' + var + '","' + var +'"],\n')
 
   if has_X:
     poss = loci['X']
     poss.sort(key=int)
     for pos in poss:
-      var = str(key) + ':' + str(pos)
+      var = 'X' + ':' + str(pos)
       outfile.write('\t["' + var + '","' + var +'"],\n')
 
 if __name__ == "__main__":
