@@ -13,7 +13,7 @@ Three types of input files are needed for this utility to work:
  
 ### 1. For each trait/phenotype of interest, a \<trait\>.txt file with all the loci of interest in it. 
 
-For example, one would have a si.txt for smoking initiation, sc.txt for smoking cessation, and so on. These files **should have a header line**.
+For example, one would have a si.txt for smoking initiation, sc.txt for smoking cessation, and so on. These files **should have a header line**. The header line should start with a **#**.
 
   The important columns here are:
   - Column 1 : **Chromosome**
