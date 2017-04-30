@@ -12,8 +12,9 @@ def main():
             "rgb(255, 255, 51)", "rgb(255, 102, 255)", "rgb(160, 160, 160)"]
   
   count = 0
-  all_out = open('index.html', 'w')
-  w_out = open('wrapper.html', 'w')
+  out_dir = os.path.dirname(args.phenos)
+  all_out = open(out_dir + '/index.html', 'w')
+  w_out = open(out_dir + '/wrapper.html', 'w')
   write_head(all_out, "All phenotypes", "15:78800000-78820000")
   all_out.write('    var phenos = [' + '\n')
 
@@ -30,8 +31,8 @@ def main():
       fields = line.split('\t')
       s_id = fields[0].strip()
       s_name = fields[1].strip()
-      s_fname = fields[2].strip()
-      p_html = s_id + '.html'
+      s_fname = out_dir + '/' + fields[2].strip()
+      p_html = out_dir + '/' + s_id + '.html'
       print p_html
 
       w_out.write('    <a class="tab" href="' + p_html + '" target="tabIframe2">' + s_name +'</a>\n')
