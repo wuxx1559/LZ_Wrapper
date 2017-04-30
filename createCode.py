@@ -32,12 +32,12 @@ def main():
       s_id = fields[0].strip()
       s_name = fields[1].strip()
       s_fname = out_dir + '/' + fields[2].strip()
-      p_html = out_dir + '/' + s_id + '.html'
+      p_html = s_id + '.html'
       print p_html
 
       w_out.write('    <a class="tab" href="' + p_html + '" target="tabIframe2">' + s_name +'</a>\n')
 
-      with open(p_html, 'w') as out:
+      with open(out_dir + '/' + p_html, 'w') as out:
         write_sigs(out, s_fname, s_name, s_id, colors[count], sig_loci)
 
       all_out.write('\t{ namespace: "' + str(s_id) + '", title: "' + s_name + '" , color: "' + colors[count] +'", study_id: "' + str(s_id)  +'" },\n')
