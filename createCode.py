@@ -15,10 +15,11 @@ def main():
   out_dir = os.path.dirname(args.phenos)
   all_out = open(out_dir + '/index.html', 'w')
   w_out = open(out_dir + '/wrapper.html', 'w')
-  write_head(all_out, "All phenotypes", "15:78800000-78820000")
+  write_head(all_out, "All phenotypes", "15:78313155-79313155")
   all_out.write('    var phenos = [' + '\n')
 
   sig_loci = {}
+  sig_rsnum = {}
 
   with open('html/wrapper_top.html', 'r') as w:
     for line in w.readlines():
@@ -38,7 +39,7 @@ def main():
       w_out.write('    <a class="tab" href="' + p_html + '" target="tabIframe2">' + s_name +'</a>\n')
 
       with open(out_dir + '/' + p_html, 'w') as out:
-        write_sigs(out, s_fname, s_name, s_id, colors[count], sig_loci)
+        write_sigs(out, s_fname, s_name, s_id, colors[count], sig_loci, sig_rsnum)
 
       all_out.write('\t{ namespace: "' + str(s_id) + '", title: "' + s_name + '" , color: "' + colors[count] +'", study_id: "' + str(s_id)  +'" },\n')
       count = count + 1
@@ -48,7 +49,7 @@ def main():
     for line in a.readlines():
       all_out.write(line.rstrip() + '\n')
   all_out.write('    var top_hits = [' + '\n')
-  sort_write(all_out, sig_loci)
+  sort_write(all_out, sig_loci, sig_rsnum)
   all_out.write('    ];\n')
   write_tail(all_out)
   all_out.close()
@@ -82,8 +83,9 @@ def write_tail(outfile):
     for line in d.readlines():
       outfile.write(line.rstrip() + '\n')
 
-def write_sigs(outfile, sigfile, s_name, s_id, color, all_sig_loci):
+def write_sigs(outfile, sigfile, s_name, s_id, color, all_sig_loci, all_sig_rsnum):
   p_loci = {}
+  rsnums = {}
   with open(sigfile, 'r') as c:
     for line in c.readlines():
       fields = line.split('\t')
@@ -93,25 +95,33 @@ def write_sigs(outfile, sigfile, s_name, s_id, color, all_sig_loci):
         p_loci[chrom] = []
       if pos not in p_loci[chrom]:
         p_loci[chrom].append(pos)
-
+      
       if chrom not in all_sig_loci:
         all_sig_loci[chrom] = []
       if pos not in all_sig_loci[chrom]:
         all_sig_loci[chrom].append(pos)
 
+      if len(fields) == 3:
+        var_name = str(chrom) + ':'+ str(pos) + ' (' + fields[2].strip() + ')'
+      else:
+        var_name = str(chrom) + ':' + str(pos)
+      rsnums[(chrom, pos)] = var_name
+      all_sig_rsnum[(chrom, pos)] = var_name
+
+
   some_chr = p_loci.keys()[0]
-  h_locus = str(some_chr) + ':' + str(int(p_loci[some_chr][0]) - 300000) + '-' + str(int(p_loci[some_chr][0]) + 300000)
+  h_locus = str(some_chr) + ':' + str(int(p_loci[some_chr][0]) - 500000) + '-' + str(int(p_loci[some_chr][0]) + 500000)
   write_head(outfile, s_name, h_locus)
   outfile.write('    var phenos = [' + '\n')
   outfile.write('\t{ namespace: "' + str(s_id) + '", title: "' + s_name + '" , color: "' + color +'", study_id: "' + str(s_id)  +'" },\n')
   outfile.write('     ];' + '\n')
   write_mid(outfile)
   outfile.write('    var top_hits = [' + '\n')
-  sort_write(outfile, p_loci)
+  sort_write(outfile, p_loci, rsnums)
   outfile.write('    ];\n')
   write_tail(outfile)
 
-def sort_write(outfile, loci):
+def sort_write(outfile, loci, rsnums):
   sorted_keys = loci.keys()
   has_X = False
   if all(item.isdigit() for item in sorted_keys):
@@ -130,14 +140,16 @@ def sort_write(outfile, loci):
     poss.sort(key=int)
     for pos in poss:
       var = str(key1) + ':' + str(pos)
-      outfile.write('\t["' + var + '","' + var +'"],\n')
+      var_name = rsnums[(key1, pos)]
+      outfile.write('\t["' + var + '","' + var_name +'"],\n')
 
   if has_X:
     poss = loci['X']
     poss.sort(key=int)
     for pos in poss:
       var = 'X' + ':' + str(pos)
-      outfile.write('\t["' + var + '","' + var +'"],\n')
+      var_name = rsnums[('X', pos)]
+      outfile.write('\t["' + var + '","' + var_name +'"],\n')
 
 if __name__ == "__main__":
   main()

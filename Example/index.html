@@ -11,7 +11,7 @@
     <script src="http://statgen.github.io/locuszoom/locuszoom.app.js" type="text/javascript"></script>
     <link rel="stylesheet" href="http://statgen.github.io/locuszoom/locuszoom.css" type="text/css"/>
 
-    <title>LocusZoom.js ~ TopMed</title>
+    <title>LocusZoom.js</title>
 
     <style>
       body {
@@ -29,9 +29,6 @@
   <body style="background-color: #FAFAFA; margin-left: 20px; margin-right: 20px;">
     <div class="container">
 
-      <h1 style="margin-top: 1em;"><strong>LocusZoom.js</strong></h1>
-
-      <h3 style="float: left; color: #777">TOPmed</h3>
       <h6 style="float: right;"><a href="index.html">&lt; return home</a></h6>
 
       <hr style="clear: both;">
@@ -43,7 +40,7 @@
           <ul class="top_hits" style="padding-left: 0.2rem; min-width: 110px;"></ul>
         </div>
         <div class="ten columns">
-		<div id="plot" data-region="15:78800000-78820000"></div>
+		<div id="plot" data-region="15:78313155-79313155"></div>
         </div>
       </div>
 
@@ -70,7 +67,7 @@
     // Build the base layout
     var association_panel_mods = {
         data_layers: [
-            LocusZoom.Layouts.get("data_layer", "significance", { name: "Line of GWAS Significance" }),
+            LocusZoom.Layouts.get("data_layer", "significance", { name: "Line of GWAS Significance", offset: 7.301}),
             LocusZoom.Layouts.get("data_layer", "recomb_rate", { namespace: { "recomb": "recomb" }, name: "Recombination Rate" })
         ],
         dashboard: LocusZoom.Layouts.get("panel", "association")["dashboard"]
@@ -143,8 +140,8 @@
       var start = 0;
       var end = 0;
       if (!pos.match(/[-+]/)) {
-        start = +pos - 300000
-        end = +pos + 300000
+        start = +pos - 500000
+        end = +pos + 500000
       }
       plot.applyState({ chr: chr, start: start, end: end, ldrefvar: "" });
       return false;

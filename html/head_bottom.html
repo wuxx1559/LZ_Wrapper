@@ -24,7 +24,7 @@
     // Build the base layout
     var association_panel_mods = {
         data_layers: [
-            LocusZoom.Layouts.get("data_layer", "significance", { name: "Line of GWAS Significance" }),
+            LocusZoom.Layouts.get("data_layer", "significance", { name: "Line of GWAS Significance", offset: 7.301}),
             LocusZoom.Layouts.get("data_layer", "recomb_rate", { namespace: { "recomb": "recomb" }, name: "Recombination Rate" })
         ],
         dashboard: LocusZoom.Layouts.get("panel", "association")["dashboard"]
