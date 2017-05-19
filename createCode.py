@@ -3,6 +3,13 @@ from subprocess import Popen, PIPE
 import pandas
 from collections import OrderedDict
 
+def makedirs(path):
+  try: 
+    os.makedirs(path)
+  except OSError:
+    if not os.path.isdir(path):
+      raise
+
 def main():
   parser = argparse.ArgumentParser(prog='createCode', usage='%(prog)s [options]')
   parser.add_argument('phenos', metavar='phenotype file', nargs='?', help = 'The path to the phenotypes file')
@@ -12,40 +19,80 @@ def main():
             "rgb(255, 255, 51)", "rgb(255, 102, 255)", "rgb(160, 160, 160)"]
   
   count = 0
-  out_dir = os.path.dirname(args.phenos)
-  all_out = open(out_dir + '/index.html', 'w')
-  w_out = open(out_dir + '/wrapper.html', 'w')
+  pheno_dir = os.path.dirname(args.phenos)
+
+  #Checks for reqiured components
+  if not os.path.exists(pheno_dir):
+    raise IOError(pheno_dir + ' does not exist!')
+  makedirs('templates')
+  if not os.path.exists('templates/login.html'):
+    raise IOError('Please download login.html from github into templates.')
+  makedirs('static/html')
+  if not os.path.exists('static/style.css'):
+    raise IOError('Please download style.css from github into static.')
+  if not os.path.exists('static/js'):
+    raise IOError('Please download the static/js directory and locuszoom.app.js from github into static.')
+  if not os.path.exists('lib'):
+    raise IOError('Please download the lib directory from github for the html templates.')
+
+  #Write files 
+  all_out = open('static/html/index.html', 'w')
+  w_out = open('templates/wrapper.html', 'w')
   write_head(all_out, "All phenotypes", "15:78313155-79313155")
   all_out.write('    var phenos = [' + '\n')
+
+  app_out = open('app.py', 'w')
+  app_l_out = open('app_login.py', 'w') 
+
+  with open('lib/app_top.txt', 'r') as at:
+    for line in at.readlines():
+      app_out.write(line)
+
+  with open('lib/app_login_top.txt', 'r') as at:
+    for line in at.readlines():
+      app_l_out.write(line)
 
   sig_loci = {}
   sig_rsnum = {}
 
-  with open('html/wrapper_top.html', 'r') as w:
+  with open('lib/wrapper_top.html', 'r') as w:
     for line in w.readlines():
       w_out.write(line.rstrip() + '\n')
-
-  w_out.write('    <a class="tab" href="index.html" target="tabIframe2">All Phenotypes</a>\n')
+  w_out.write('    <a class="tab" href="{{url_for(\'index\')}}" target="tabIframe2">All Phenotypes</a>\n')
 
   with open(args.phenos, 'r') as f:
     for line in f.readlines():
       fields = line.split('\t')
       s_id = fields[0].strip()
       s_name = fields[1].strip()
-      s_fname = out_dir + '/' + fields[2].strip()
+      s_fname = pheno_dir + '/' + fields[2].strip()
       p_html = s_id + '.html'
       print p_html
+      w_out.write('    <a class="tab" href="{{url_for(\'' +s_id + '\')}}" target="tabIframe2">' + s_name +'</a>\n')
 
-      w_out.write('    <a class="tab" href="' + p_html + '" target="tabIframe2">' + s_name +'</a>\n')
-
-      with open(out_dir + '/' + p_html, 'w') as out:
+      with open('static/html/' + p_html, 'w') as out:
         write_sigs(out, s_fname, s_name, s_id, colors[count], sig_loci, sig_rsnum)
 
       all_out.write('\t{ namespace: "' + str(s_id) + '", title: "' + s_name + '" , color: "' + colors[count] +'", study_id: "' + str(s_id)  +'" },\n')
       count = count + 1
 
+      app_out.write('@app.route(\'/static/html/' + s_id + '.html\')\n')
+      app_l_out.write('@app.route(\'/static/html/' + s_id + '.html\')\n')
+      app_out.write('def ' + s_id + '():\n')
+      app_l_out.write('def ' + s_id + '():\n')
+      app_out.write('  return send_file(\'static/html/' + s_id + '.html\')\n\n')
+      app_l_out.write('  return send_file(\'static/html/' + s_id + '.html\')\n\n')
+
+  with open('lib/app_bottom.txt', 'r') as ab:
+    for line in ab.readlines():
+      app_out.write(line)
+      app_l_out.write(line)
+
+  app_out.close()
+  app_l_out.close()
+
   all_out.write('     ];' + '\n')
-  with open('html/mid_all.html', 'r') as a:
+  with open('lib/mid_all.html', 'r') as a:
     for line in a.readlines():
       all_out.write(line.rstrip() + '\n')
   all_out.write('    var top_hits = [' + '\n')
@@ -54,32 +101,32 @@ def main():
   write_tail(all_out)
   all_out.close()
 
-  with open('html/wrapper_bottom.html', 'r') as w:
+  with open('lib/wrapper_bottom.html', 'r') as w:
     for line in w.readlines():
       w_out.write(line.rstrip() + '\n')
 
   w_out.close()
         
 def write_head(outfile, name, locus):
-  with open('html/head_top.html', 'r') as a:
+  with open('lib/head_top.html', 'r') as a:
     for line in a.readlines():
       outfile.write(line.rstrip() + '\n')
   outfile.write('\t<p>This set of plots shows significant loci for ' + name + '.</p>\n')
-  with open('html/head_mid.html', 'r') as a:
+  with open('lib/head_mid.html', 'r') as a:
     for line in a.readlines():
       outfile.write(line.rstrip() + '\n')
   outfile.write('\t\t<div id="plot" data-region="' + locus + '"></div>\n')
-  with open('html/head_bottom.html', 'r') as a:
+  with open('lib/head_bottom.html', 'r') as a:
     for line in a.readlines():
       outfile.write(line.rstrip() + '\n')
 
 def write_mid(outfile):
-  with open('html/mid.html', 'r') as a:
+  with open('lib/mid.html', 'r') as a:
     for line in a.readlines():
       outfile.write(line.rstrip() + '\n')
 
 def write_tail(outfile):
-  with open('html/tail.html', 'r') as d:
+  with open('lib/tail.html', 'r') as d:
     for line in d.readlines():
       outfile.write(line.rstrip() + '\n')
 
