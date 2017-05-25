@@ -20,7 +20,7 @@ df=pandas.read_csv('assoc.csv', engine='c', dtype={'chromosome':str})
 def home():
     return render_template('wrapper.html')
 
-@app.route('/single/results/', methods=['GET', 'POST'])
+@app.route('/results/', methods=['GET', 'POST'])
 def results():
   #analysis in 3 and chromosome in  '15' and position ge 78800000 and position le 78900000
   args = request.args
