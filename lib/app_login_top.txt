@@ -37,7 +37,7 @@ def home():
     print 'logged in'
     return render_template('wrapper.html')
 
-@app.route('/single/results/', methods=['GET', 'POST'])
+@app.route('/results/', methods=['GET', 'POST'])
 def results():
   if not session.get('logged_in'):
     flash('Not logged in!')
