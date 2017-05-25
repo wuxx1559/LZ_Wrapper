@@ -1,4 +1,4 @@
-    var dataBase = 'http://127.0.0.1:8000/single/'
+    var dataBase = 'http://127.0.0.1:8000/'
     //dataBase = window.location.origin + window.location.pathname.substr(0, window.location.pathname.length - "exome.html".length)
     phenos.forEach(function(pheno){
         data_sources.add(pheno.namespace, ["AssociationLZ", {url: dataBase, params: {analysis: pheno.study_id, id_field: "variant"}}]);
