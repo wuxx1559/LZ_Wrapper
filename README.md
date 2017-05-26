@@ -18,7 +18,7 @@ For example, one would have a si.txt for smoking initiation, sc.txt for smoking 
   The important columns here are:
   - Column 1 : **Chromosome**
   - Column 2 : **Position**
-  - Column 3 : **Marker/Variant ID**. The variant ID should be of the format **chr:position_REF/ALT**. The ref allele is inferred from this variant id.
+  - Column 3 : **Marker/Variant ID**. The variant ID should be of the format **_chr:position_REF/ALT_**. The ref allele is inferred from this variant id.
   - Column 4 : **p value**
   - Column 5 : **Minor allele frequency (MAF)**
   The trait file can have other columns after column 5 - those will be ignored.
