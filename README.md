@@ -58,11 +58,11 @@ For example: `python createCSV.py ai.txt cpd.txt si.txt sc.txt`
 
 ## **Step2**
 
-The second step is to create the html file and the web server application needed to run LocusZoom js. The script **createCode.py** creates these files. Inputs to the script are the sig_variant.txt and phenotypes.txt files. The script outputs text in html format which can be redirected to a html file of user's choice.
+The second step is to create the html file and the web server application needed to run LocusZoom js. The script **createCode.py** creates these files. Inputs to the script is the phenotypes.txt file. The script outputs text in html format which can be redirected to a html file of user's choice, and app.py files for the web server.
 
 `python createCode.py -h` to look at the inputs needed. 
 
-`python createCode.py sig_variant.txt phenotypes.txt`
+`python createCode.py phenotypes.txt`
 
 As a reminder, the phenotype ids (column 1) of the phenotypes file should exactly match the input file names for each trait in step 1. This step creates a html file for LocusZoom with LD for each trait/phenotype (trait.html), a multiple phenotpye LocusZoom plot for all traits together (index.html) and a **wrapper.html** which lets a user traverse between the different plots generated.
 The **wrapper.html** file is stored in the templates/ directory. The **index.html** and **trait.html** files are in the static/html directory.
