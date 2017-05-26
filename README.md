@@ -7,6 +7,7 @@
 - Pandas
 - Internet connection
 
+
 ## **Input data**
 
 Three types of input files are needed for this utility to work:
@@ -25,6 +26,8 @@ For example, one would have a si.txt for smoking initiation, sc.txt for smoking 
   See Examples for trait file examples (t1.txt, t2.txt, t3.txt).
   
 ### 2. For each phenotype, a tab-separated sig_variant.txt file with all the significant variants a user may want to explore (the TOP hits in the app for a phenotype). 
+
+**This file should not have a header.**
 
 For the example, this file contains the positions in TOP Hits in the following image:
  ![Alt text](/Example/TopHits.png?raw=true "Top Hits")
@@ -49,6 +52,8 @@ This file specifies the different phenotypes/traits of interest and their ids, a
 ## **Step 1**
 
 The first step is to create a csv file with the input data. Here we use the \<trait\>.txt files as input to the **createCSV.py** script. The script outputs a file named **assoc.csv**.
+
+Please run this code in the LZ_wrapper directory where the code resides.
 
 `python createCSV.py -h` to look at the inputs needed. 
 
