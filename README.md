@@ -67,7 +67,7 @@ The second step is to create the html file and the web server application needed
 
 `python createCode.py -h` to look at the inputs needed. 
 
-`python createCode.py phenotypes.txt`
+`python createCode.py Example/phenotypes.txt`
 
 As a reminder, the phenotype ids (column 1) of the phenotypes file should exactly match the input file names for each trait in step 1. This step creates a html file for LocusZoom with LD for each trait/phenotype (trait.html), a multiple phenotpye LocusZoom plot for all traits together (index.html) and a **wrapper.html** which lets a user traverse between the different plots generated.
 The **wrapper.html** file is stored in the templates/ directory. The **index.html** and **trait.html** files are in the static/html directory.
